@@ -3,8 +3,6 @@ future
 
 A seemless async future object frame work for ruby
 
-Will shortly add: timeout support, done check on future object
-
 Usage
 -----
 
@@ -32,10 +30,10 @@ cars = Future.new(executor: :my_pool) { Car.all }  	    # makes async call to da
 people.do_something  									# waits on the future object to be popluated and only then is the method call executed
 cars.do_something    									# waits on the future object to be popluated and only then is the method call executed
 ```
-Options
--------
+
 
 ExecutorFactory options with defaults:
+--------------------------------------
 ``` ruby
 executor = Future::ExecutorFactory.create(core_pool_size: 10,
           max_pool_size: 10,
@@ -46,6 +44,7 @@ executor = Future::ExecutorFactory.create(core_pool_size: 10,
 ```
 
 ```Future.new``` can take either the name of executor or a reference to an executor
+------------------------------------------------------------------------------------
 ``` ruby
 people = Future.new(executor: :my_pool) { Person.all }
 ```
@@ -55,6 +54,7 @@ people = Future.new(executor: executor) { Person.all }
 ```
 
 Read access timeout on future object can be set as:
+---------------------------------------------------
 ``` ruby
 people = Future.new(executor: executor, access_timeout_millis: 100) { Person.all }
 people.do_something # timer is triggered on access
@@ -64,4 +64,7 @@ on timeout throws exception:
 Java::JavaUtilConcurrent::TimeoutException
 ```
 
-
+Check if the future is populated without blocking on it(any method other than is_done? is guranteed to block)
+``` ruby
+people.is_done?  # true / false
+```
