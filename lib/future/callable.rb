@@ -1,6 +1,6 @@
 class Future < ::BasicObject
   class Callable
-    include ::Java::java.util.concurrent.Callable
+    include Java::JavaUtilConcurrent::Callable
     def initialize(&block)
       @block = block
     end
