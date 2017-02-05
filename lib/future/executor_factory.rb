@@ -1,9 +1,13 @@
 class Future < ::BasicObject
   class ExecutorFactory
-    MILLIS = Java::JavaUtilConcurrent::TimeUnit::MILLISECONDS
     @@executor_map = {}
-    def self.create(core_pool_size: 10, max_pool_size: 10, keep_alive_millis: 2000, queue_size: 50, name: :default)
-      thread_factory = DaemonThreadFactory.new
+    def self.create(core_pool_size: 10,
+          max_pool_size: 10,
+          keep_alive_millis: 5000,
+          queue_size: 50,
+          name: :default,
+          thread_factory: DaemonThreadFactory.new)
+
       work_queue = queue_size.to_i > 0 ?
                     Java::JavaUtilConcurrent::LinkedBlockingQueue.new(queue_size.to_i) :
                     Java::JavaUtilConcurrent::SynchronousQueue.new
