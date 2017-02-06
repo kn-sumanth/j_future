@@ -1,12 +1,12 @@
 future
 ======
 
-A seemless async future object frame work for ruby
+A seemless proxy future object framework for jruby to do work in parallel
 
 Usage
 -----
 
-First, create a thread pool executor to execute the async tasks. Ideally this should be done in the application initializer.
+First, create a thread pool executor to execute the tasks. Ideally this should be done in the application initializer.
 ``` ruby
 executor = Future::ExecutorFactory.create
 ```
@@ -16,14 +16,14 @@ Its is recommended that you give a name for the executor (default name is `:defa
 executor = Future::ExecutorFactory.create(name: :my_pool)
 ```
 
-Let us pick some calls to make async
+Let us pick some calls and make them concurrent
 ``` ruby
 people = Person.all  # call to database
 people.do_something  # use result by calling methods on it
 cars = Car.all   	 # call to database
 cars.do_something    # use result by calling methods on it
 ```
-change the above to async:
+change the above to execute in parallel:
 ``` ruby
 people = Future.new(executor: :my_pool) { Person.all }  # makes async call to database and returns the result as a future object
 cars = Future.new(executor: :my_pool) { Car.all }  	    # makes async call to database and returns the result as a future object
