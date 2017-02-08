@@ -8,12 +8,12 @@ Usage
 
 First, create a thread pool executor to execute the tasks. Ideally this should be done in the application initializer.
 ``` ruby
-executor = Future::ExecutorFactory.create
+executor = JFuture::ExecutorFactory.create
 ```
 
 Its is recommended that you give a name for the executor (default name is `:default`). Below we create a thread pool executor with all available options:
 ``` ruby
-executor = Future::ExecutorFactory.create(name: :my_pool)
+executor = JFuture::ExecutorFactory.create(name: :my_pool)
 ```
 
 Let us pick some calls and make them concurrent
@@ -25,8 +25,8 @@ cars.do_something    # use result by calling methods on it
 ```
 change the above to execute in parallel:
 ``` ruby
-people = Future.new(executor: :my_pool) { Person.all }  # makes async call to database and returns the result as a future object
-cars = Future.new(executor: :my_pool) { Car.all }  	    # makes async call to database and returns the result as a future object
+people = JFuture.new(executor: :my_pool) { Person.all }  # makes async call to database and returns the result as a future object
+cars = JFuture.new(executor: :my_pool) { Car.all }  	    # makes async call to database and returns the result as a future object
 people.do_something  									# waits on the future object to be popluated and only then is the method call executed
 cars.do_something    									# waits on the future object to be popluated and only then is the method call executed
 ```
@@ -35,29 +35,29 @@ cars.do_something    									# waits on the future object to be popluated and o
 ExecutorFactory options with defaults
 -------------------------------------
 ``` ruby
-executor = Future::ExecutorFactory.create(core_pool_size: 10,
-          max_pool_size: 10,
-          keep_alive_millis: 5000,
-          queue_size: 50,
+executor = JFuture::ExecutorFactory.create(core_pool_size: 20,
+          max_pool_size: 20,
+          keep_alive_millis: 120000,
+          queue_size: 10,
           name: :default,
           thread_factory: DaemonThreadFactory.new)
 ```
 
 Submit task to an executor
 --------------------------
-```Future.new``` can take either the name of executor or a reference to an executor
+```JFuture.new``` can take either the name of executor or a reference to an executor
 ``` ruby
-people = Future.new(executor: :my_pool) { Person.all }
+people = JFuture.new(executor: :my_pool) { Person.all }
 ```
 or
 ``` ruby
-people = Future.new(executor: executor) { Person.all }
+people = JFuture.new(executor: executor) { Person.all }
 ```
 Timeouts
 --------
 Read access timeout on future object can be set as:
 ``` ruby
-people = Future.new(executor: executor, access_timeout_millis: 100) { Person.all }
+people = JFuture.new(executor: executor, access_timeout_millis: 100) { Person.all }
 people.do_something # timer is triggered on access
 ```
 on timeout throws exception:
@@ -74,16 +74,16 @@ people.is_done?  # true / false
 Async callbacks on future completion:
 -------------------------------------
 ``` ruby
-restaurant = Future.new {Restaurant.find(id)} # get future object
+restaurant = JFuture.new {Restaurant.find(id)} # get future object
 restaurant.on_complete {|restaurant| puts restaurant.name} # set up an async callback
 ```
 by chaining:
 ``` ruby
-Future.new {Restaurant.find(id)}.on_complete {|result| puts result.name}
+JFuture.new {Restaurant.find(id)}.on_complete {|result| puts result.name}
 ```
 The timeout on future applies to the on_complete as well. It will throw a Java::JavaUtilConcurrent::TimeoutException on time out. This error can be handled by adding a rescue block for the error inside on_complete block.
 ``` ruby
-Future.new(access_timeout_millis: 1) {Restaurant.find(id)}.on_complete do
+JFuture.new(access_timeout_millis: 1) {Restaurant.find(id)}.on_complete do
   begin
     puts restaurant.name
   rescue Java::JavaUtilConcurrent::TimeoutException

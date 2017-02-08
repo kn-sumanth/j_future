@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-require "./lib/future/version"
+require "./lib/j_future/version"
 
 Gem::Specification.new do |s|
-  s.name        = 'future'
-  s.version     = Future::VERSION
+  s.name        = 'j_future'
+  s.version     = JFuture::VERSION
   s.platform    = 'java'
   s.authors     = ['Sumanth K N']
   s.email       = ['kn.sumanth@gmail.com']
   s.homepage    = 'https://github.com/kn-sumanth/future'
-  s.description = s.summary = %q{simple future object framework for ruby}
+  s.description = s.summary = %q{simple future object framework for jruby}
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

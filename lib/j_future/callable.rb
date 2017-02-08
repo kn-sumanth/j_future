@@ -1,4 +1,4 @@
-class Future < ::BasicObject
+class JFuture < ::BasicObject
   class Callable
     include Java::JavaUtilConcurrent::Callable
     def initialize(arg = nil, &block)

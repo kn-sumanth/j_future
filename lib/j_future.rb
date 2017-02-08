@@ -1,9 +1,9 @@
 require 'java'
-require_relative 'future/version'
-require_relative 'future/callable'
-require_relative 'future/daemon_thread_factory'
-require_relative 'future/executor_factory'
-class Future < ::BasicObject
+require_relative 'j_future/version'
+require_relative 'j_future/callable'
+require_relative 'j_future/daemon_thread_factory'
+require_relative 'j_future/executor_factory'
+class JFuture < ::BasicObject
   MILLIS = ::Java::JavaUtilConcurrent::TimeUnit::MILLISECONDS
   METHODS = [:is_done?, :on_complete]
 

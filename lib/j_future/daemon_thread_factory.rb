@@ -1,4 +1,4 @@
-class Future < ::BasicObject
+class JFuture < ::BasicObject
   class DaemonThreadFactory
     include Java::JavaUtilConcurrent::ThreadFactory
     def newThread(runnable)

@@ -1,10 +1,10 @@
-class Future < ::BasicObject
+class JFuture < ::BasicObject
   class ExecutorFactory
     @@executor_map = {}
-    def self.create(core_pool_size: 10,
-          max_pool_size: 10,
-          keep_alive_millis: 5000,
-          queue_size: 50,
+    def self.create(core_pool_size: 20,
+          max_pool_size: 20,
+          keep_alive_millis: 120000,
+          queue_size: 10,
           name: :default,
           thread_factory: DaemonThreadFactory.new)
 
