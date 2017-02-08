@@ -91,4 +91,8 @@ Future.new(access_timeout_millis: 1) {Restaurant.find(id)}.on_complete do
   end
 end
 ```
+Note:
+-----
+The `access_timeout_millis` only applies to the thread blocking on future object. the worker thread which computes the future will be blocked for as long as it takes to compute the future object without any timeout applicable to it. So, only pass things into future that will complete.
+The callback and future object computation are scheduled as separate tasks possibly taking up different threads. While deciding the number of workers for the executor keep in mind that blocked task with callback results in two blocked workers.
 
