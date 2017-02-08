@@ -70,3 +70,25 @@ Check if the future is populated without blocking on it(any method other than is
 ``` ruby
 people.is_done?  # true / false
 ```
+
+Async callbacks on future completion:
+-------------------------------------
+``` ruby
+restaurant = Future.new {Restaurant.find(id)} # get future object
+restaurant.on_complete {|restaurant| puts restaurant.name} # set up an async callback
+```
+by chaining:
+``` ruby
+Future.new {Restaurant.find(id)}.on_complete {|result| puts result.name}
+```
+The timeout on future applies to the on_complete as well. It will throw a Java::JavaUtilConcurrent::TimeoutException on time out. This error can be handled by adding a rescue block for the error inside on_complete block.
+``` ruby
+Future.new(access_timeout_millis: 1) {Restaurant.find(id)}.on_complete do
+  begin
+    puts restaurant.name
+  rescue Java::JavaUtilConcurrent::TimeoutException
+    puts 'task timed out'
+  end
+end
+```
+

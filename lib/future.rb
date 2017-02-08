@@ -5,16 +5,17 @@ require_relative 'future/daemon_thread_factory'
 require_relative 'future/executor_factory'
 class Future < ::BasicObject
   MILLIS = ::Java::JavaUtilConcurrent::TimeUnit::MILLISECONDS
-  METHODS = [:is_done?]
+  METHODS = [:is_done?, :on_complete]
 
   def initialize(executor: :default, access_timeout_millis: nil, &block)
     @access_timeout_millis = access_timeout_millis
     callable = Callable.new(&block)
     if (executor.is_a? ::Java::JavaUtilConcurrent::AbstractExecutorService)
-      @future = executor.submit callable
+      @executor = executor
     else
-      @future = ExecutorFactory.get_executor(executor).submit callable
+      @executor = ExecutorFactory.get_executor(executor)
     end
+    @future = @executor.submit callable
   end
 
   def respond_to?(id, *args)
@@ -28,6 +29,11 @@ class Future < ::BasicObject
 
   def is_done?
     @future.isDone
+  end
+
+  def on_complete(&block)
+    callback = Callable.new(self, &block)
+    @executor.submit callback
   end
 
   def method_missing(name, *args, &block)
