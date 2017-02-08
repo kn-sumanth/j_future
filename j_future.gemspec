@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.platform    = 'java'
   s.authors     = ['Sumanth K N']
   s.email       = ['kn.sumanth@gmail.com']
-  s.homepage    = 'https://github.com/kn-sumanth/future'
+  s.homepage    = 'https://github.com/kn-sumanth/j_future'
   s.description = s.summary = %q{simple future object framework for jruby}
 
   s.files         = `git ls-files`.split("\n")
