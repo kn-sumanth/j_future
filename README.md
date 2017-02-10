@@ -99,6 +99,9 @@ JFuture.new { Restaurant.all[0]}.on_complete{|res| res.name}.on_complete{|res|  
 ```
 Its recommended to avoid chaining when possible as it blocks as many workers as the links in the chain. The workers get unblocked in the order of the chain links.
 Its possible to specify the `executor` and `access_timeout_millis` for the `.on_complete` as well.
+``` ruby
+JFuture.new(executor: :db_pool, access_timeout_millis: 100){ Restaurant.all[0]}.on_complete(executor: :default,  access_timeout_millis: 200){|res| res.name}.on_complete{|res|  puts res; puts res}
+```
 While the `executor` specified for `.on_complete` will be used to run the `block` of `.on_complete`, the `access_timeout_millis` will apply to the consumer of the result of the `.on_complete` when it tries to read the result of on complete (`access_timeout_millis` always applies to the consumer of the JFuture object)
 JFuture objects for each link in the chain are created and consumed in one shot. So the timer for each of the timeouts starts almost at the same time. Hence the timeouts in the chain should be in increasing order (i.e. cumulative of the timeout of the previous link in the chain)
 Note:
