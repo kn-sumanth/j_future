@@ -7,9 +7,9 @@ class JFuture < ::BasicObject
   MILLIS = ::Java::JavaUtilConcurrent::TimeUnit::MILLISECONDS
   METHODS = [:is_done?, :on_complete]
 
-  def initialize(executor: :default, access_timeout_millis: nil, &block)
+  def initialize(executor: :default, access_timeout_millis: nil, arg: nil, &block)
     @access_timeout_millis = access_timeout_millis
-    callable = Callable.new(&block)
+    callable = Callable.new(arg, &block)
     if (executor.is_a? ::Java::JavaUtilConcurrent::AbstractExecutorService)
       @executor = executor
     else
@@ -31,9 +31,8 @@ class JFuture < ::BasicObject
     @future.isDone
   end
 
-  def on_complete(&block)
-    callback = Callable.new(self, &block)
-    @executor.submit callback
+  def on_complete(executor: :default, access_timeout_millis: nil, &block)
+    ::JFuture.new(executor: executor, access_timeout_millis: access_timeout_millis, arg: self, &block)
   end
 
   def method_missing(name, *args, &block)
